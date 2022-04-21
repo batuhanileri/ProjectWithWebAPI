@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataAccess.Concrete.EntityFramework.UserMap;
+using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +25,11 @@ namespace DataAccess.Concrete.Contexts
             string conStr = "Data Source=DESKTOP-AOMM71G; Initial Catalog = WebAPIContextDb; Integrated Security =true";
             optionsBuilder.UseSqlServer(conStr);
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new UserMap());
+        }
+
+        public virtual DbSet<User> Users { get; set; }
     }
 }
