@@ -1,3 +1,5 @@
+using Business.Abstract;
+using Business.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.Contexts;
 using DataAccess.Concrete.EntityFramework;
@@ -34,6 +36,7 @@ namespace WebAPI
                 options => options.MigrationsAssembly("DataAccess").MigrationsHistoryTable(HistoryRepository.DefaultTableName, "dbo")));
 
             services.AddTransient<IUserDal, EfUserDal>();
+            services.AddTransient<IUserService, UserManager>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
