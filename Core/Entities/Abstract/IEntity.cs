@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Abstract
+namespace Core.Entities.Abstract
 {
-    public interface IDto
+    public interface IEntity
     {
+        public int Id  { get; set; }
     }
 }

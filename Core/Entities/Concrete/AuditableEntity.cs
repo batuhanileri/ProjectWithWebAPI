@@ -1,13 +1,14 @@
-﻿using Entities.Abstract;
+﻿using Core.Entities.Abstract;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concrete.BaseEntities
+namespace Core.Entities.Concrete
 {
-    public class AuditableEntity : BaseEntity, ICreatedEntity, IUpdatedEntity
+    public class AuditableEntity : BaseEntity, ICreatedEntitycs, IUpdatedEntity
     {
         public int CreatedUserId { get ; set ; }
         public DateTime CreatedDate { get; set; }
