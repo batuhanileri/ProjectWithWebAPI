@@ -32,7 +32,6 @@ namespace DataAccess.Concrete.EntityFramework.UserMap
               .HasMaxLength(50)
               .IsRequired();
 
-
             builder.Property(x => x.Password)
               .HasColumnName("Password")
               .HasMaxLength(20)
@@ -41,7 +40,6 @@ namespace DataAccess.Concrete.EntityFramework.UserMap
             builder.Property(x => x.Gender)
               .HasColumnName("Gender")
               .IsRequired();
-
 
             builder.Property(x => x.DateOfBirth)
               .HasColumnName("DateOfBirth")
