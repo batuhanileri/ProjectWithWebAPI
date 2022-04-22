@@ -13,7 +13,7 @@ namespace Mvc_UI.Controllers
     public class UsersController : Controller
     {
         private readonly HttpClient _httpClient;
-        private string url = "http://localhost:53858/api/";
+        private readonly string url = "http://localhost:53858/api/";
 
         public UsersController(HttpClient httpClient)
         {
@@ -46,7 +46,7 @@ namespace Mvc_UI.Controllers
                 Password=userAddViewModel.Password,
                 UserName=userAddViewModel.UserName
             };
-
+             
             HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync(url + "Users/Add", userAdd);
 
             if(httpResponseMessage.IsSuccessStatusCode)
@@ -55,8 +55,59 @@ namespace Mvc_UI.Controllers
             }
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            var user = await _httpClient.GetFromJsonAsync<UserDto>(url + "Users/GetById/" + id);
 
-        private List<Gender> GenderFill()
+            UserUpdateViewModel userUpdateViewModel = new()
+            {
+                FirstName = user.FirstName,
+                GenderId = user.Gender == true ? 1:2,
+                LastName = user.LastName,
+                Address = user.Address,
+                DateOfBirth = user.DateOfBirth,
+                Email = user.Email,
+                Password = user.Password,
+                UserName = user.UserName
+            };
+            ViewBag.Gender = GenderFill();
+
+            return View(userUpdateViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update(int id , UserUpdateViewModel userUpdateViewModel)
+        {
+
+            UserUpdateDto userUpdateDto = new()
+            {
+                FirstName = userUpdateViewModel.FirstName,
+                Gender = userUpdateViewModel.GenderId == 1 ? true:false,
+                LastName = userUpdateViewModel.LastName,
+                Address = userUpdateViewModel.Address,
+                DateOfBirth = userUpdateViewModel.DateOfBirth,
+                Email = userUpdateViewModel.Email,
+                Password = userUpdateViewModel.Password,
+                UserName = userUpdateViewModel.UserName,
+                Id =id
+            };
+            HttpResponseMessage httpResponseMessage = await _httpClient.PutAsJsonAsync(url + "Users/Update", userUpdateDto);
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View();
+        } 
+
+       
+        public async Task<IActionResult> Delete(int id)
+        {
+             await _httpClient.DeleteAsync(url + "Users/Delete/" + id);
+            
+             return RedirectToAction("Index");
+        }
+        private static List<Gender> GenderFill()
         {
             List<Gender> genders = new();
             genders.Add(new Gender() { Id = 1, GenderName = "Erkek" });
