@@ -44,6 +44,32 @@ namespace WebAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
+
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Bearer þemasýný kullanan JWT Yetkilendirme baþlýðý. \r\n\r\n 'Bearer' [boþluk] girin ve ardýndan aþaðýdaki metin giriþine simgenizi girin.\r\n\r\nÖrnek: \"Bearer 12345abcdef\"",
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
