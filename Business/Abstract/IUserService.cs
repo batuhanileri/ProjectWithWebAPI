@@ -1,4 +1,5 @@
-﻿using Core.Helpers.JWT;
+﻿
+using Core.Utilities.Security.Token;
 using Entities.Dtos.UserDtos;
 using System;
 using System.Collections.Generic;

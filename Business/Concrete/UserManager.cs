@@ -1,5 +1,5 @@
 ﻿using Business.Abstract;
-using Core.Helpers.JWT;
+using Core.Utilities.Security.Token;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.Dtos.UserDtos;
@@ -62,28 +62,31 @@ namespace Business.Concrete
         {
             var user = await _userDal.GetAsync(x => x.UserName == userForLoginDto.UserName && x.Password == userForLoginDto.Password);
 
+            if(user ==null)          
+                return null;
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.SecuritKey);
+            var key = Encoding.ASCII.GetBytes(_appSettings.SecurityKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new[]
                 {
+                    
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            AccessToken accessToken = new()
+            return new AccessToken()
             {
                 Token = tokenHandler.WriteToken(token),
                 UserName = user.UserName,
                 Expiration = (DateTime)tokenDescriptor.Expires,
                 UserId = user.Id
             };
-            return await Task.Run(() => accessToken);
         }
 
         public async Task<bool> DeleteAsync(int id)

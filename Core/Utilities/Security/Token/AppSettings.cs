@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Helpers.JWT
+namespace Core.Utilities.Security.Token
 {
     public class AppSettings
     {
-        public string SecuritKey { get; set; }
+        public string SecurityKey { get; set; }
     }
 }
