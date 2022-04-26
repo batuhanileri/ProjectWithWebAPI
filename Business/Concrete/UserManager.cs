@@ -1,10 +1,15 @@
 ﻿using Business.Abstract;
+using Core.Helpers.JWT;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.Dtos.UserDtos;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,10 +18,12 @@ namespace Business.Concrete
     public class UserManager : IUserService
     {
         private readonly IUserDal _userDal;
+        AppSettings _appSettings;
 
-        public UserManager(IUserDal userDal)
+        public UserManager(IUserDal userDal, IOptions<AppSettings> appSettings)
         {
             _userDal = userDal;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<UserDto> AddAsync(UserAddDto entity)
@@ -49,6 +56,34 @@ namespace Business.Concrete
             };
 
             return userDto;
+        }
+
+        public async Task<AccessToken> Authenticate(UserForLoginDto userForLoginDto)
+        {
+            var user = await _userDal.GetAsync(x => x.UserName == userForLoginDto.UserName && x.Password == userForLoginDto.Password);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.SecuritKey);
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            AccessToken accessToken = new()
+            {
+                Token = tokenHandler.WriteToken(token),
+                UserName = user.UserName,
+                Expiration = (DateTime)tokenDescriptor.Expires,
+                UserId = user.Id
+            };
+            return await Task.Run(() => accessToken);
         }
 
         public async Task<bool> DeleteAsync(int id)
