@@ -1,3 +1,4 @@
+using AutoMapper;
 using Business.Abstract;
 using Business.Concrete;
 using Core.Utilities.Security.Token;
@@ -5,6 +6,7 @@ using Core.Utilities.Security.Token.jwt;
 using DataAccess.Abstract;
 using DataAccess.Concrete.Contexts;
 using DataAccess.Concrete.EntityFramework;
+using Entities.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -95,6 +97,14 @@ namespace WebAPI
                 };
 
             });
+
+            var mapperConfi = new MapperConfiguration(x =>
+            {
+                x.AddProfile(new Mapping());
+            });
+            var mapper = mapperConfi.CreateMapper();
+            services.AddSingleton(mapper);
+
 
             services.AddTransient<IUserDal, EfUserDal>();
             services.AddTransient<IUserService, UserManager>();

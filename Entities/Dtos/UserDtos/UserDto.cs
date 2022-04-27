@@ -16,5 +16,8 @@ namespace Entities.Dtos.UserDtos
         public string Address { get; set; }
         public bool Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Token { get; set; }
+        public DateTime? TokenExpireDate { get; set; }
     }
 }
