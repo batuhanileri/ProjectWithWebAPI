@@ -46,14 +46,17 @@ namespace WebAPI
             services.AddControllers();
             services.AddCustomSwagger();
             services.AddCustomJwtToken(Configuration);
-         
-            var mapperConfi = new MapperConfiguration(x =>
-            {
-                x.AddProfile(new Mapping());
-            });
-            var mapper = mapperConfi.CreateMapper();
-            services.AddSingleton(mapper);
 
+            services.AddAutoMapper(typeof(Mapping));
+
+            //var mapperConfi = new MapperConfiguration(x =>
+            //{
+            //    x.AddProfile(new Mapping());
+            //});
+            //var mapper = mapperConfi.CreateMapper();
+            //services.AddSingleton(mapper);
+
+            
 
             services.AddTransient<IUserDal, EfUserDal>();
             services.AddTransient<IUserService, UserManager>();
