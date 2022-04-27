@@ -1,6 +1,7 @@
 using AutoMapper;
 using Business.Abstract;
 using Business.Concrete;
+using Core.Extensions;
 using Core.Utilities.Security.Token;
 using Core.Utilities.Security.Token.jwt;
 using DataAccess.Abstract;
@@ -43,61 +44,9 @@ namespace WebAPI
                 options => options.MigrationsAssembly("DataAccess").MigrationsHistoryTable(HistoryRepository.DefaultTableName, "dbo")));
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
-
-
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "Bearer þemasýný kullanan JWT Yetkilendirme baþlýðý. \r\n\r\n 'Bearer' [boþluk] girin ve ardýndan aþaðýdaki metin giriþine simgenizi girin.\r\n\r\nÖrnek: \"Bearer 12345abcdef\"",
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] {}
-                    }
-                });
-            });
-
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-
-            //var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:SecurityKey").Value);
-
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-
-            });
-
+            services.AddCustomSwagger();
+            services.AddCustomJwtToken(Configuration);
+         
             var mapperConfi = new MapperConfiguration(x =>
             {
                 x.AddProfile(new Mapping());
@@ -121,8 +70,8 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
+                app.UseCustomSwagger();
+
             }
 
             app.UseRouting();
