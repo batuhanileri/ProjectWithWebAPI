@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Mvc_UI.ApiService;
 using Mvc_UI.ApiService.Interfaces;
+using Mvc_UI.Handler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Mvc_UI
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
             services.AddSession();
-
+            services.AddScoped<AuthTokenHandler>();
             services.AddHttpClient<IAuthApiService,AuthApiService>(opt =>
             {
                 opt.BaseAddress = new Uri("http://localhost:53858/api/");
@@ -39,7 +40,7 @@ namespace Mvc_UI
             {
                 opt.BaseAddress = new Uri("http://localhost:53858/api/");
 
-            });
+            }).AddHttpMessageHandler<AuthTokenHandler>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
