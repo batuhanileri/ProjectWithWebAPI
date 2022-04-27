@@ -29,7 +29,7 @@ namespace Business.Concrete
         public async Task<ApiDataResponse<UserDto>> LoginAsync(UserForLoginDto userForLoginDto)
         {
             var user = await _userService.GetAsync(x => x.UserName == userForLoginDto.UserName && x.Password == userForLoginDto.Password);
-            if(user ==null)
+            if(user.Data ==null)
             {
                 return new ApiErrorDataResponse<UserDto>(null, Messages.UserNotFound);
             }

@@ -34,7 +34,7 @@ namespace Mvc_UI.Areas.Admin.Controllers
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
             var user = await _authApiService.LoginAsync(userForLoginDto);
-            if(user.Success)
+            if(user!=null && user.Success)
             {
                 _httpContextAccessor.HttpContext.Session.SetString("token", user.Data.Token);
                 var userClaims = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
