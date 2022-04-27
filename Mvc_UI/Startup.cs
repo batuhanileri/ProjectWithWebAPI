@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Mvc_UI.ApiService;
+using Mvc_UI.ApiService.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +27,29 @@ namespace Mvc_UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddHttpClient();
+            services.AddHttpContextAccessor();
+            services.AddSession();
+
+            services.AddHttpClient<IAuthApiService,AuthApiService>(opt =>
+            {
+                opt.BaseAddress = new Uri("http://localhost:53858/api/");
+
+            });
+            services.AddHttpClient<IUserApiService, UserApiService>(opt =>
+            {
+                opt.BaseAddress = new Uri("http://localhost:53858/api/");
+
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
+                {
+                    opt.LoginPath = "/Admin/Auth/Login";
+                    opt.ExpireTimeSpan = TimeSpan.FromDays(60);
+                    opt.SlidingExpiration = true;
+                    opt.Cookie.Name = "Webapi";
+
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,10 +66,12 @@ namespace Mvc_UI
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
+            app.UseSession();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -56,7 +83,7 @@ namespace Mvc_UI
               );
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Users}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

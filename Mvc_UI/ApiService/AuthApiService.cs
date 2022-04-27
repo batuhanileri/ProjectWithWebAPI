@@ -20,7 +20,7 @@ namespace Mvc_UI.ApiService
 
         public async Task<ApiDataResponse<UserDto>> LoginAsync(UserForLoginDto loginDto)
         {
-            HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync("Auths/Login", loginDto);
+            HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync("Auth/Login", loginDto);
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 var data = await httpResponseMessage.Content.ReadAsStringAsync();
