@@ -22,7 +22,7 @@ namespace Mvc_UI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var users = await _httpClient.GetFromJsonAsync<List<UserDetailDto>>(url + "Users/GetList");
+            var users = await _httpClient.GetFromJsonAsync<IEnumerable<UserDetailDto>>(url + "Users/GetList");
             return View(users);
         }
 

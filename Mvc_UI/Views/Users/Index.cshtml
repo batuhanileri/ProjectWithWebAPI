@@ -17,6 +17,7 @@
             <td>Email</td>
             <td>Address</td>
             <td>Gender</td>
+            <td>PhoneNumber</td>
             <td>DateOfBirth</td>
             <td>İşlemler</td>
         </tr>
@@ -24,20 +25,21 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.UserName</td>
-                <td>@item.FirstName</td>
-                <td>@item.LastName</td>
-                <td>@item.Email</td>
-                <td>@item.Address</td>
-                <td>@item.Gender</td>
-                <td>@item.DateOfBirth.ToString("D")</td>
-                <td>
-                    <a asp-action="Update" asp-route-id="@item.Id" class="badge badge-info">Güncelle</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="badge badge-danger">Sil</a>
-                </td>
-            </tr>
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.UserName</td>
+            <td>@item.FirstName</td>
+            <td>@item.LastName</td>
+            <td>@item.Email</td>
+            <td>@item.Address</td>
+            <td>@item.Gender</td>
+            <td>@item.PhoneNumber</td>
+            <td>@item.DateOfBirth.ToString("D")</td>
+            <td>
+                <a asp-action="Update" asp-route-id="@item.Id" class="badge badge-info">Güncelle</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="badge badge-danger">Sil</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
