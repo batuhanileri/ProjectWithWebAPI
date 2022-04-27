@@ -109,8 +109,9 @@ namespace WebAPI
             services.AddTransient<IUserDal, EfUserDal>();
             services.AddTransient<IUserService, UserManager>();
             services.AddTransient<ITokenService, JwtTokenService>();
+            services.AddScoped<IAuthService, AuthManager>();
 
-         
+
 
         }
 

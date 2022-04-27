@@ -26,6 +26,8 @@ namespace Entities.Mapping
             CreateMap<User, UserUpdateDto>();
             CreateMap<UserUpdateDto, User>();
 
+            CreateMap<UserDto, UserUpdateDto>();
+            CreateMap<UserUpdateDto, UserDto>();
         }
     }
 }
